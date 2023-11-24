@@ -1,8 +1,6 @@
-#############################
-# Training (Menu)
-# JCY oct 23
+# Training (GEO01)
+# TN 24.11.2023
 # PRO DB PY
-#############################
 
 import tkinter as tk
 import geo01
@@ -24,8 +22,48 @@ def exercise(event,exer):
 
 #call display_results
 def display_result(event):
-    # TODO
-    print("display_result")
+    window_result = tk.Tk()
+    window_result.title("Affichage braintraining")
+    window_result.geometry("1175x900")
+
+    # color définition
+    rgb_color = (139, 201, 194)
+    hex_color = '#%02x%02x%02x' % rgb_color  # translation in hexa
+    window_result.configure(bg=hex_color)
+
+    tk.Label(window_result, text="TRAINING : AFFICHAGE", font=("Arial", 15)).grid(row=0, column=0, ipady=5, padx=40, pady=40)
+
+    frame_entry_result = tk.Frame(window_result)
+    frame_entry_result.grid()
+    frame_result = tk.Frame(window_result, width=1140, height=500)
+    frame_result.grid(pady=20)
+    frame_total = tk.Frame(window_result)
+    frame_total.grid()
+
+    tk.Label(frame_entry_result, text='Pseudo:', font=("Arial", 10)).grid(row=1, column=0, padx=40, pady=5)
+    entry_pseudo = tk.Entry(frame_entry_result, font=("Arial", 10))
+    entry_pseudo.grid(row=1, column=1)
+
+    tk.Label(frame_entry_result, text='Exercice:', font=("Arial", 10)).grid(row=1, column=2, padx=40, pady=5)
+    entry_pseudo = tk.Entry(frame_entry_result, font=("Arial", 10))
+    entry_pseudo.grid(row=1, column=3)
+
+    tk.Label(frame_entry_result, text='Date début:', font=("Arial", 10)).grid(row=1, column=4, padx=40, pady=5)
+    entry_pseudo = tk.Entry(frame_entry_result, font=("Arial", 10))
+    entry_pseudo.grid(row=1, column=5)
+
+    tk.Label(frame_entry_result, text='Date fin:', font=("Arial", 10)).grid(row=1, column=6, padx=40, pady=5)
+    entry_pseudo = tk.Entry(frame_entry_result, font=("Arial", 10))
+    entry_pseudo.grid(row=1, column=7)
+
+    btn_resut = tk.Button(frame_entry_result, text="Voir résultats", font=("Arial", 10))
+    btn_resut.grid()
+
+    tk.Label(frame_total, text="NbLignes", font=("Arial", 10)).grid(row=1, column=0, padx=40, pady=5)
+    tk.Label(frame_total, text="Temps total", font=("Arial", 10)).grid(row=1, column=1, padx=40, pady=5)
+    tk.Label(frame_total, text="Nb OK", font=("Arial", 10)).grid(row=1, column=2, padx=40, pady=5)
+    tk.Label(frame_total, text="Nb Total", font=("Arial", 10)).grid(row=1, column=3, padx=40, pady=5)
+    tk.Label(frame_total, text="% Total", font=("Arial", 10)).grid(row=1, column=4, padx=40, pady=5)
 
 
 # Main window
