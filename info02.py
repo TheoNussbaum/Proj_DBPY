@@ -57,7 +57,7 @@ def save_game(event):
         percent = (nbsuccess/nbtrials)*100
     else:
         percent = 0
-    save_game_geo01(pseudo, date_hour, duration, exercise, nbtrials, nbsuccess, percent)
+    saved_game(pseudo, date_hour, duration, exercise, nbtrials, nbsuccess, percent)
     print("Donnée sauvegarder")
 
 

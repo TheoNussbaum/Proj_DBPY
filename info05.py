@@ -1,7 +1,6 @@
 # Training (GEO01)
 # TN 24.11.2023
 # PRO DB PY
-
 import math
 import tkinter as tk
 from tkinter.messagebox import showinfo          # Les alertes
@@ -202,7 +201,7 @@ def save_game(event):
         percent = (nbsuccess/nbtrials)*100
     else:
         percent = 0
-    save_game_geo01(pseudo, date_hour, duration, exercise, nbtrials, nbsuccess, percent)
+    saved_game(pseudo, date_hour, duration, exercise, nbtrials, nbsuccess, percent)
     print("Donnée sauvegarder")
 
 

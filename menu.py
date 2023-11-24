@@ -3,6 +3,7 @@
 # PRO DB PY
 
 import tkinter as tk
+from database import *
 import geo01
 import info02
 import info05
@@ -26,6 +27,8 @@ def display_result(event):
     window_result.title("Affichage braintraining")
     window_result.geometry("1175x900")
 
+    title = [("Elève", "Date heure", "Temps", "Exercice", "nb OK", "nb Total", "% réussi")]
+
     # color définition
     rgb_color = (139, 201, 194)
     hex_color = '#%02x%02x%02x' % rgb_color  # translation in hexa
@@ -35,7 +38,7 @@ def display_result(event):
 
     frame_entry_result = tk.Frame(window_result)
     frame_entry_result.grid()
-    frame_result = tk.Frame(window_result, width=1140, height=500)
+    frame_result = tk.Frame(window_result, width=15)
     frame_result.grid(pady=20)
     frame_total = tk.Frame(window_result)
     frame_total.grid()
@@ -58,6 +61,7 @@ def display_result(event):
 
     btn_resut = tk.Button(frame_entry_result, text="Voir résultats", font=("Arial", 10))
     btn_resut.grid()
+    btn_resut.bind("<Button-1>", lambda e: display_tuple_in_table(title + display_table_result()))
 
     tk.Label(frame_total, text="NbLignes", font=("Arial", 10)).grid(row=1, column=0, padx=40, pady=5)
     tk.Label(frame_total, text="Temps total", font=("Arial", 10)).grid(row=1, column=1, padx=40, pady=5)
@@ -65,6 +69,10 @@ def display_result(event):
     tk.Label(frame_total, text="Nb Total", font=("Arial", 10)).grid(row=1, column=3, padx=40, pady=5)
     tk.Label(frame_total, text="% Total", font=("Arial", 10)).grid(row=1, column=4, padx=40, pady=5)
 
+    def display_tuple_in_table(mytuple):
+        for line in range(0, len(mytuple)):
+            for col in range(0, len(mytuple[line])):
+                (tk.Label(frame_result, text=mytuple[line][col], width=15, font=("Arial", 10)).grid(row=line, column=col,padx=2, pady=2))
 
 # Main window
 window = tk.Tk()
