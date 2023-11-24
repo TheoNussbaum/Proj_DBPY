@@ -7,10 +7,18 @@ def open_db():
 db_connection = open_db()
 print("Connection réussi")
 
-def save_game_geo01(pseudo, date_hour, duration, exercice, nbtrials, nbok, percent):
+def saved_game(pseudo, date_hour, duration, exercice, nbtrials, nbok, percent):
     query = "INSERT INTO results (pseudo, date_hour, duration, exercice, nbtrials, nbok, percent) values (%s, %s, %s, %s, %s, %s, %s)"
     cursor = db_connection.cursor()
     cursor.execute(query, (pseudo, date_hour, duration, exercice, nbtrials, nbok, percent))
     row = cursor.lastrowid
+    cursor.close()
+    return row
+
+def display_table_result():
+    query = "SELECT pseudo, date_hour, duration, exercice, nbtrials, nbok, percent FROM results"
+    cursor = db_connection.cursor()
+    cursor.execute(query, )
+    row = cursor.fetchall()
     cursor.close()
     return row
