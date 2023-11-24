@@ -1,5 +1,5 @@
 # Training (GEO01)
-# JCY oct 23
+# TN 24.11.2023
 # PRO DB PY
 
 import tkinter as tk
