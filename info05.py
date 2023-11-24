@@ -1,6 +1,7 @@
-# Training (INFO05)
-# JCY oct 23
+# Training (GEO01)
+# TN 24.11.2023
 # PRO DB PY
+
 import math
 import tkinter as tk
 from tkinter.messagebox import showinfo          # Les alertes
@@ -9,7 +10,7 @@ from math import cos, sin, pi
 from colorsys import hsv_to_rgb, rgb_to_hsv
 from math import sqrt
 import time
-import database
+from database import *
 import datetime
 from tkinter.messagebox import *
 
@@ -74,7 +75,7 @@ def display():
 # only called at the beginning
 def display_wheel_color():
 
-    global rect_mini_rgb, rect_rgb, rect_response, line_hor_response, line_vert_response, lbl_distance
+    global rect_mini_rgb, rect_rgb, rect_response, line_hor_response, line_vert_response, lbl_distance, entry_pseudo
     canvas.create_text(200, 20, text="Essayez de reproduire la couleur de gauche", fill="black", font=("Arial", 15))
     lbl_distance=canvas.create_text(200, 320, fill="black", font=("Arial", 15))
 
@@ -191,8 +192,18 @@ def sl_v(event):
 
 
 def save_game(event):
-    print("dans save")
-    #TODO
+    global entry_pseudo
+
+    pseudo = entry_pseudo.get()
+    date_hour = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    duration = datetime.datetime.now() - start_date
+    nbok = nbsuccess
+    if nbtrials > 0:
+        percent = (nbsuccess/nbtrials)*100
+    else:
+        percent = 0
+    save_game_geo01(pseudo, date_hour, duration, exercise, nbtrials, nbsuccess, percent)
+    print("Donnée sauvegarder")
 
 
 def display_timer():
@@ -204,7 +215,7 @@ def display_timer():
 
 
 def open_window_info_05(window):
-    global window_info05, lbl_duration, lbl_result, hex_color, start_date, slider_r, slider_g, slider_b, slider_v, entry_response, canvas
+    global window_info05, lbl_duration, lbl_result, hex_color, start_date, slider_r, slider_g, slider_b, slider_v, entry_response, canvas, entry_pseudo
     window_info05 = tk.Toplevel(window)
     window_info05.title("La couleur perdue")
     window_info05.geometry("1100x900")
