@@ -1,12 +1,12 @@
-# Training (INFO02)
-# JCY oct 23
+# Training (GEO01)
+# TN 24.11.2023
 # PRO DB PY
 
 import tkinter as tk
 import random
 from math import pow
 import time
-import database
+from database import *
 import datetime
 from tkinter.messagebox import *
 
@@ -47,8 +47,18 @@ def next(event):
 
 
 def save_game(event):
-    print("dans save")
-    # TODO
+    global entry_pseudo
+
+    pseudo = entry_pseudo.get()
+    date_hour = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    duration = datetime.datetime.now() - start_date
+    nbok = nbsuccess
+    if nbtrials > 0:
+        percent = (nbsuccess/nbtrials)*100
+    else:
+        percent = 0
+    save_game_geo01(pseudo, date_hour, duration, exercise, nbtrials, nbsuccess, percent)
+    print("Donnée sauvegarder")
 
 
 def test(event):
@@ -77,7 +87,7 @@ def display_timer():
 
 
 def open_window_info_02(window):
-    global window_info02, lbl_duration, lbl_result, entry_n2, label_u2, label_n1, hex_color, start_date
+    global window_info02, lbl_duration, lbl_result, entry_n2, label_u2, label_n1, hex_color, start_date, entry_pseudo
     window_info02 = tk.Toplevel(window)
 
     #window_info02 = tk.Tk()
