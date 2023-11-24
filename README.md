@@ -1,12 +1,8 @@
-# braintraining_forstudents
+# Sprint 1
 
 ### Objectif ###
 
-Il s'agit de compléter en python un projet déjà commencé par mon enseignant permettant de créer des exercices interactifs.
-Il s'agit d'en faire un outil plus complet qui enregistre les travaux des étudiants et offre une gestion des utilisateurs.
-Ce développement aura lieu pendant ma formation de CFC informaticien.\
-Version : \
-26.10.2023 : ouverture du dépôt
+Les objectif de ce premier sprint était de sauvgarder les partie des jeux diffèrent 
 
 ### Comment configurer ma machine pour que le programme fonctionne? ###
 
