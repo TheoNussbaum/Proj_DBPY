@@ -6,7 +6,7 @@ import tkinter as tk
 import random
 from math import sqrt
 import time
-import database
+from database import *
 import datetime
 
 
@@ -21,7 +21,7 @@ mycircle= None #objet utilisé pour le cercle rouge
 
 
 #important data (to save)
-pseudo="Gaston" #provisory pseudo for user
+pseudo="" #provisory pseudo for user
 exercise="GEO01"
 nbtrials=0 #number of total trials
 nbsuccess=0 #number of successfull trials
@@ -46,9 +46,11 @@ def canvas_click(event):
     nbtrials+=1
     if d > 0.5:
         window_geo01.configure(bg="red")
+        print(f"Essai № {nbtrials} rater")
     else:
         window_geo01.configure(bg="green")
         nbsuccess += 1
+        print(f"Essai № {nbtrials} réusi")
     lbl_result.configure(text=f"{pseudo} Essais réussis : {nbsuccess} / {nbtrials}")
     window_geo01.update()
     time.sleep(1) # delai 1s
@@ -88,8 +90,18 @@ def next_point(event):
 
 
 def save_game(event):
-    # TODO
-    print("dans save")
+    global entry_pseudo
+
+    pseudo = entry_pseudo.get()
+    date_hour = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    duration = datetime.datetime.now() - start_date
+    nbok = nbsuccess
+    if nbtrials > 0:
+        percent = (nbsuccess/nbtrials)*100
+    else:
+        percent = 0
+    save_game_geo01(pseudo, date_hour, duration, exercise, nbtrials, nbsuccess, percent)
+    print("Donnée sauvegarder")
 
 
 def display_timer():
@@ -99,10 +111,9 @@ def display_timer():
     lbl_duration.configure(text="{:02d}".format(int(duration_s /60)) + ":" + "{:02d}".format(duration_s %60))
     window_geo01.after(1000, display_timer) #recommencer après 15 ms
 
-
 def open_window_geo_01(window):
     # window = tk.Tk()
-    global window_geo01, hex_color, lbl_title, lbl_duration, lbl_result, lbl_target, canvas, start_date
+    global window_geo01, hex_color, lbl_title, lbl_duration, lbl_result, lbl_target, canvas, start_date, entry_pseudo
     window_geo01 = tk.Toplevel(window)
 
     window_geo01.title("Exercice de géométrie")
@@ -123,6 +134,7 @@ def open_window_geo_01(window):
     tk.Label(window_geo01, text='Pseudo:', font=("Arial", 15)).grid(row=1, column=0, padx=5, pady=5)
     entry_pseudo = tk.Entry(window_geo01, font=("Arial", 15))
     entry_pseudo.grid(row=1, column=1)
+
 
     lbl_result = tk.Label(window_geo01, text=f"Essais réussis : 0/0", font=("Arial", 15))
     lbl_result.grid(row=1, column=3, padx=5, pady=5, columnspan=4)
