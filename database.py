@@ -3,7 +3,7 @@ Auteur : Nussbaum Théo
 Date : 15.12.2023
 Version : 0.2
 '''
-# Iportation module
+# Importation module
 import mysql.connector
 
 # Connexion à la base de données
