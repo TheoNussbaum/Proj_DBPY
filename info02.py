@@ -4,7 +4,6 @@ Date : 15.12.2023
 Version : 0.2
 '''
 
-
 import tkinter as tk
 import random
 from math import pow
@@ -50,21 +49,30 @@ def next(event):
 
 
 def save_game(event):
-    global entry_pseudo, nbsuccess, nbtrials
+    global entry_pseudo, nbsuccess, nbtrials, window_geo01
 
-    pseudo = entry_pseudo.get()
-    date_hour = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    duration = datetime.datetime.now() - start_date
+    # Récupération des données depuis les champs de saisie ou les variables globales
+    pseudo = entry_pseudo.get()  # Supposons que entry_pseudo soit un champ de saisie tkinter
+    date_hour = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Récupération de la date actuelle
+    duration = datetime.datetime.now() - start_date  # Calcul de la durée depuis un certain moment (start_date)
 
+    # Calcul du pourcentage de succès en fonction des essais réussis et des essais totaux
     if nbtrials > 0:
-        percent = (nbsuccess/nbtrials)*100
+        percent = (nbsuccess / nbtrials) * 100
     else:
         percent = 0
+
+    # Appel de la fonction pour sauvegarder les données dans la base de données
     saved_game(pseudo, date_hour, duration, exercise, nbtrials, nbsuccess, percent)
+
+    # Fermeture de la fenêtre window_geo01
     window_info02.destroy()
+
+    # Réinitialisation des variables nbtrials et nbsuccess
     nbtrials = 0
     nbsuccess = 0
-    print("Donnée sauvegarder")
+
+    print("Données sauvegardées")
 
 
 def test(event):
