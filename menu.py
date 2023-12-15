@@ -227,10 +227,6 @@ def display_result(event):
         entry_total_create = tk.Entry(window_create)
         entry_total_create.grid()
 
-        tk.Label(window_create, text="% réussi", font=("Arial", 10)).grid()
-        entry_percent_create = tk.Entry(window_create)
-        entry_percent_create.grid()
-
         # Ajoute un bouton "Terminer" dans la fenêtre
         btn_create1 = tk.Button(window_create, text="Terminer")
         btn_create1.grid()
@@ -240,8 +236,7 @@ def display_result(event):
         def insert_row():
             # Appelle la fonction insert_from_id() avec les valeurs saisies dans les champs de saisie
             insert_from_id(entry_pseudo_create.get(), entry_date_create.get(), entry_temps_create.get(),
-                           entry_exercice_create.get(), entry_ok_create.get(), entry_total_create.get(),
-                           entry_percent_create.get())
+                           entry_exercice_create.get(), entry_ok_create.get(), entry_total_create.get(),)
             # Affiche le résultat dans une table en appelant les fonctions display_table_result() et display_table_average()
             display_tuple_in_table(title + display_table_result(), title_average + display_table_average())
             window_create.destroy()  # Ferme la fenêtre de création après l'insertion
