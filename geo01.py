@@ -1,6 +1,8 @@
-# Training (GEO01)
-# TN 24.11.2023
-# PRO DB PY
+'''
+Auteur : Nussbaum Théo
+Date : 15.12.2023
+Version : 0.2
+'''
 
 import tkinter as tk
 import random
@@ -90,17 +92,20 @@ def next_point(event):
 
 
 def save_game(event):
-    global entry_pseudo
+    global entry_pseudo, nbsuccess, nbtrials, window_geo01
 
     pseudo = entry_pseudo.get()
     date_hour = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     duration = datetime.datetime.now() - start_date
-    nbok = nbsuccess
+
     if nbtrials > 0:
         percent = (nbsuccess/nbtrials)*100
     else:
         percent = 0
     saved_game(pseudo, date_hour, duration, exercise, nbtrials, nbsuccess, percent)
+    window_geo01.destroy()
+    nbtrials = 0
+    nbsuccess = 0
     print("Donnée sauvegarder")
 
 
@@ -161,6 +166,7 @@ def open_window_geo_01(window):
     canvas.bind("<Button-1>", canvas_click)
     btn_next.bind("<Button-1>", next_point)
     btn_finish.bind("<Button-1>", save_game)
+
 
     # main loop
     window_geo01.mainloop()
