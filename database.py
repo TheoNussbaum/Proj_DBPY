@@ -3,7 +3,7 @@ Auteur : Nussbaum Théo
 Date : 15.12.2023
 Version : 0.2
 '''
-# Importation module
+
 import mysql.connector
 
 # Connexion à la base de données
@@ -55,8 +55,8 @@ def edit_result(duration, nbok, nbtrials, id):
     cursor.close()
 
 # Fonction pour insérer des données à partir d'un ID
-def insert_from_id(pseudo, date_hour, duration, exercice, nbtrials, nbok, percent):
-    query = "INSERT INTO results (pseudo, date_hour, duration, exercice, nbtrials, nbok, percent) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+def insert_from_id(pseudo, date_hour, duration, exercice, nbtrials, nbok):
+    query = "INSERT INTO results (pseudo, date_hour, duration, exercice, nbtrials, nbok) VALUES (%s, %s, %s, %s, %s, %s)"
     cursor = db_connection.cursor()
-    cursor.execute(query, (pseudo, date_hour, duration, exercice, nbtrials, nbok, percent))
+    cursor.execute(query, (pseudo, date_hour, duration, exercice, nbtrials, nbok))
     cursor.close()
