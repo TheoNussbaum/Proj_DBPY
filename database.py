@@ -16,9 +16,29 @@ def saved_game(pseudo, date_hour, duration, exercice, nbtrials, nbok, percent):
     return row
 
 def display_table_result():
-    query = "SELECT pseudo, date_hour, duration, exercice, nbtrials, nbok, percent FROM results"
+    query = "SELECT idResults, pseudo, date_hour, duration, exercice, nbtrials, nbok, percent FROM results"
     cursor = db_connection.cursor()
     cursor.execute(query, )
     row = cursor.fetchall()
     cursor.close()
     return row
+
+def display_table_average():
+    query = "SELECT count(pseudo), SEC_TO_TIME(TIME_TO_SEC(SUM(duration))), SUM(nbtrials), SUM(nbok), AVG(percent) FROM results"
+    cursor = db_connection.cursor()
+    cursor.execute(query, )
+    row = cursor.fetchall()
+    cursor.close()
+    return row
+
+def delete_from_id(id):
+    query = "DELETE FROM results WHERE idResults = %s"
+    cursor = db_connection.cursor()
+    cursor.execute(query, (id, ))
+    cursor.close()
+
+def edit_result(duration, nb_ok, nb_trial, id):
+    query = "UPDATE display SET temps = %s, nb_ok = %s, nb_total = %s WHERE id = %s"
+    cursor = db_connection.cursor()
+    cursor.execute(query, (duration, nb_ok, nb_trial, id))
+    cursor.close()
