@@ -4,7 +4,9 @@ Date : 15.12.2023
 Version : 0.2
 '''
 
+# Importation des modules
 import tkinter as tk
+from tkinter import ttk
 from database import *
 import geo01
 import info02
@@ -52,7 +54,7 @@ def display_result(event):
     frame_menu = tk.Frame(window_result)
     frame_menu.grid(row=4, column=0, pady=20)
 
-    # Création de label, d'entrées et de boutons pour l'interface utilisateur
+    # Création de labels, d'entrées et de boutons pour l'interface utilisateur
     tk.Label(window_result, text="TRAINING : AFFICHAGE", font=("Arial", 15)).grid(row=0, column=0, padx=400, pady=10)
 
     tk.Label(frame_entry_result, text='Pseudo:', font=("Arial", 10)).grid(row=1, column=0, padx=40, pady=5)
@@ -75,8 +77,8 @@ def display_result(event):
     btn_resut.grid()
     btn_resut.bind("<Button-1>", lambda e: display_tuple_in_table((title + display_table_result()), (title_average + display_table_average())))
 
-    btn_creat = tk.Button(frame_menu,text="Ajouter une ligne", font=("Arial", 10))
-    btn_creat.grid(row=0, column=0)
+    btn_create = tk.Button(frame_menu,text="Ajouter une ligne", font=("Arial", 10))
+    btn_create.grid(row=0, column=0)
 
     tk.Label(frame_menu,text="ID :", font=("Arial", 10)).grid(row=0, column=2)
     entry_id = tk.Entry(frame_menu)
@@ -88,9 +90,9 @@ def display_result(event):
     btn_del = tk.Button(frame_menu, text="Supprimer", font=("Arial", 10))
     btn_del.grid(row=0, column=4)
 
-    # Fonction pour supprimer une ligne spécifique
+    # Fonction pour rafraîchir
     def delete():
-        delete_from_id(entry_id.get())  # Supprime la ligne demandée.
+        delete_from_id(entry_id.get())
 
         for widget in frame_result.winfo_children():
             widget.destroy()
@@ -101,10 +103,10 @@ def display_result(event):
 
     # Fonction pour afficher les résultats et les moyennes dans des tableaux
     def display_tuple_in_table(results_tuple, average_tuple):
-        # Boucle à travers les tuples et création des libellés pour afficher les données dans les cadres spécifiés
+        # Boucle à travers les tuples et création des lablels pour afficher les données dans les frames spécifiés
         for line in range(0, len(results_tuple)):
             for col in range(0, len(results_tuple[line])):
-                # Création des libellés pour les résultats
+                # Création des labels pour les résultats
                 lbl_results = tk.Label(frame_result, text=results_tuple[line][col], width=15, font=("Arial", 10))
                 lbl_results.grid(row=line, column=col, sticky="w")
 
@@ -120,14 +122,14 @@ def display_result(event):
                 elif results_tuple[line][6] > 75:
                     lbl_results.config(bg='green', width=width_lbl)
 
-        # Boucle pour afficher les moyennes dans des libellés et appliquer les couleurs en conséquence
+        # Boucle pour afficher les moyennes dans des labels et appliquer les bonnes couleurs
         for line in range(0, len(average_tuple)):
             for col in range(0, len(average_tuple[line])):
                 lbl_average = tk.Label(frame_total, text=average_tuple[line][col], width=15, font=("Arial", 10))
                 lbl_average.grid(row=line, column=col, padx=2, pady=2, sticky="w")
 
             # Attribution des couleurs en fonction des pourcentages de réussite
-            if line > 0:  # Exclude the first row
+            if line > 0:  # Exlue la première colomne
                 width_lbl = round(results_tuple[line][6] / 6.5)
                 lbl_average.config(text="")
                 if results_tuple[line][6] <= 25:
@@ -137,22 +139,27 @@ def display_result(event):
                 elif results_tuple[line][6] > 75:
                     lbl_average.config(bg='green', width=width_lbl)
 
+# Fonction pour crée une autre fenêtre
     def window_edit(event):
+        # Crée une nouvelle fenêtre
         window_edit = tk.Tk()
-        window_edit.title("Modifier")
-        window_edit.geometry("1175x900")
+        window_edit.title("Modification")  # Définit le titre de la fenêtre
+        window_edit.geometry("500x400")  # Définit la taille de la fenêtre
+        window_edit.maxsize(500, 400)  # Définit la taille maximale de la fenêtre
+        window_edit.minsize(500, 400)  # Définit la taille minimale de la fenêtre
 
-        # color définition
+        # Définition de la couleur en utilisant les valeurs RGB et en la convertissant en code hexadécimal
         rgb_color = (139, 201, 194)
-        hex_color = '#%02x%02x%02x' % rgb_color  # translation in hexa
-        window_edit.configure(bg=hex_color)
-        window_edit.grid_columnconfigure(0, weight=1)
+        hex_color = '#%02x%02x%02x' % rgb_color  # Convertit les valeurs RGB en hexadécimal
+        window_edit.configure(bg=hex_color)  # Applique la couleur d'arrière-plan à la fenêtre
 
+        # Crée un cadre dans la fenêtre principale
         frame_edit_title = tk.Frame(window_edit)
         frame_edit_title.grid(row=0, column=0)
 
-        tk.Label(window_edit, text="TRAINING : MODIFIER", font=("Arial", 15)).grid(row=0, column=0, padx=400, pady=10)
-
+        # Ajoute des labels et des champs de saisie dans la fenêtre
+        tk.Label(window_edit, text="TRAINING : MODIFICATION", font=("Arial", 15)).grid(row=0, column=0, padx=130,
+                                                                                       pady=10)
         tk.Label(window_edit, text="ID").grid()
         entry_id1 = tk.Entry(window_edit)
         entry_id1.grid()
@@ -166,13 +173,83 @@ def display_result(event):
         entry_total = tk.Entry(window_edit)
         entry_total.grid()
 
+        # Ajoute un bouton "Terminer" dans la fenêtre
         btn_edit1 = tk.Button(window_edit, text="Terminer")
         btn_edit1.grid()
-        btn_edit.bind("<Button-1>", lambda e: edit_result(entry_temps.get(), entry_ok.get(), entry_total.get()))
+        btn_edit1.bind("<Button-1>", lambda e: edit_row())  # Lie l'événement de clic du bouton à la fonction edit_row()
 
+        def edit_row():
+            # Appelle la fonction edit_result() avec les valeurs saisies dans les champs de saisie
+            edit_result(entry_temps.get(), entry_ok.get(), entry_total.get(), entry_id1.get())
+            # Affiche le résultat dans une table en appelant les fonctions display_table_result() et display_table_average()
+            display_tuple_in_table(title + display_table_result(), title_average + display_table_average())
+            window_edit.destroy()  # Ferme la fenêtre d'édition après l'édition
 
+    def window_create(event):
+        # Crée une nouvelle fenêtre
+        window_create = tk.Tk()
+        window_create.title("Création")  # Définit le titre de la fenêtre
+        window_create.geometry("500x400")  # Définit la taille de la fenêtre
+        window_create.maxsize(500, 400)  # Définit la taille maximale de la fenêtre
+        window_create.minsize(500, 400)  # Définit la taille minimale de la fenêtre
 
+        # Définition de la couleur en utilisant les valeurs RGB et en la convertissant en code hexadécimal
+        rgb_color = (139, 201, 194)
+        hex_color = '#%02x%02x%02x' % rgb_color  # Convertit les valeurs RGB en hexadécimal
+        window_create.configure(bg=hex_color)  # Applique la couleur d'arrière-plan à la fenêtre
+
+        frame_edit_title = tk.Frame(window_create)
+        frame_edit_title.grid(row=0, column=0)
+
+        # Ajoute des labels et des champs de saisie dans la fenêtre
+        tk.Label(window_create, text="TRAINING : CRÉATION", font=("Arial", 15)).grid(row=0, column=0, padx=140, pady=10)
+        tk.Label(window_create, text="Pseudo", font=("Arial", 10)).grid()
+        entry_pseudo_create = tk.Entry(window_create)
+        entry_pseudo_create.grid()
+
+        tk.Label(window_create, text="Date heur", font=("Arial", 10)).grid()
+        entry_date_create = tk.Entry(window_create)
+        entry_date_create.grid()
+
+        tk.Label(window_create, text="Temps", font=("Arial", 10)).grid()
+        entry_temps_create = tk.Entry(window_create)
+        entry_temps_create.grid()
+
+        tk.Label(window_create, text="Exercice", font=("Arial", 10)).grid()
+        entry_exercice_create = tk.ttk.Combobox(window_create, values=["GEO1", "INFO2", "INFO5"])
+        entry_exercice_create.grid()
+
+        tk.Label(window_create, text="nb OK", font=("Arial", 10)).grid()
+        entry_ok_create = tk.Entry(window_create)
+        entry_ok_create.grid()
+
+        tk.Label(window_create, text="nb Total", font=("Arial", 10)).grid()
+        entry_total_create = tk.Entry(window_create)
+        entry_total_create.grid()
+
+        tk.Label(window_create, text="% réussi", font=("Arial", 10)).grid()
+        entry_percent_create = tk.Entry(window_create)
+        entry_percent_create.grid()
+
+        # Ajoute un bouton "Terminer" dans la fenêtre
+        btn_create1 = tk.Button(window_create, text="Terminer")
+        btn_create1.grid()
+        btn_create1.bind("<Button-1>",
+                         lambda e: insert_row())  # Lie l'événement de clic du bouton à la fonction insert_row()
+
+        def insert_row():
+            # Appelle la fonction insert_from_id() avec les valeurs saisies dans les champs de saisie
+            insert_from_id(entry_pseudo_create.get(), entry_date_create.get(), entry_temps_create.get(),
+                           entry_exercice_create.get(), entry_ok_create.get(), entry_total_create.get(),
+                           entry_percent_create.get())
+            # Affiche le résultat dans une table en appelant les fonctions display_table_result() et display_table_average()
+            display_tuple_in_table(title + display_table_result(), title_average + display_table_average())
+            window_create.destroy()  # Ferme la fenêtre de création après l'insertion
+
+    # Bind les boutons pour ouvrire une nouvelle fenêtre
     btn_edit.bind("<Button-1>", lambda e: window_edit(e))
+    btn_create.bind("<Button-1>", lambda e: window_create(e))
+
 # Main window
 window = tk.Tk()
 window.title("Training, entrainement cérébral")
@@ -188,7 +265,7 @@ window.grid_columnconfigure((0,1,2), minsize=300, weight=1)
 lbl_title = tk.Label(window, text="TRAINING MENU", font=("Arial", 15))
 lbl_title.grid(row=0, column=1,ipady=5, padx=40,pady=40)
 
-# labels creation and positioning
+# labels createion and positioning
 for ex in range(len(a_exercise)):
     a_title[ex]=tk.Label(window, text=a_exercise[ex], font=("Arial", 15))
     a_title[ex].grid(row=1+2*(ex//3),column=ex % 3 , padx=40,pady=10) # 3 label per row
