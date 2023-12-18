@@ -4,178 +4,291 @@ Date : 15.12.2023
 Version : 0.2
 '''
 
+# Importation des modules
 import tkinter as tk
-import random
-from math import sqrt
-import time
+from tkinter import ttk
 from database import *
-import datetime
+import geo01
+import info02
+import info05
+
+# exercises array
+a_exercise=["geo01", "info02", "info05"]
+albl_image=[None, None, None] # label (with images) array
+a_image=[None, None, None] # images array
+a_title=[None, None, None] # array of title (ex: GEO01)
+
+dict_games = {"geo01": geo01.open_window_geo_01, "info02": info02.open_window_info_02, "info05": info05.open_window_info_05}
+
+# call other windows (exercices)
+def exercise(event,exer):
+    dict_games[exer](window)
 
 
-# Main window
-# graphical variables
-l = 1000 # canvas length
-h = 500 # canvas height
-target_x = 10 # x & y to find
-target_y = 10
-scale = 47.5 #100 pixels for x=1
-mycircle= None #objet utilisé pour le cercle rouge
+# Cette fonction crée une interface graphique pour afficher les résultats du programme de braintraining.
+def display_result(event):
+    # Création de la fenêtre principale
+    window_result = tk.Tk()
+    window_result.title("Affichage braintraining")  # Titre de la fenêtre
+    window_result.geometry("1175x900")  # Définition de la taille de la fenêtre
 
+    # Titres pour les colonnes de données
+    title = [("ID", "Elève", "Date heure", "Temps", "Exercice", "nb OK", "nb Total", "% réussi")]
+    title_average = [("NbLignes", "Temps total", "Nb OK", "Nb Total", "% Total")]
 
-#important data (to save)
-pseudo="" #provisory pseudo for user
-exercise="GEO01"
-nbtrials=0 #number of total trials
-nbsuccess=0 #number of successfull trials
-
-
-# on canvas click, check if succeded or failed
-def canvas_click(event):
-    global mycircle, nbtrials, nbsuccess
-    # x et y clicked
-    click_x = (event.x - l/2) / scale
-    click_y = -(event.y - h/2) / scale
-
-    # distance between clicked and (x,y)
-    dx = abs(click_x - target_x)
-    dy = abs(click_y - target_y)
-    d = sqrt((dx)**2 + (dy)**2) # Pythagore
-
-    # display a red circle where clicked (global variable mycircle)
-    mycircle = circle(target_x,target_y,0.5,"red")
-
-    # check succeeded or failed
-    nbtrials+=1
-    if d > 0.5:
-        window_geo01.configure(bg="red")
-        print(f"Essai № {nbtrials} rater")
-    else:
-        window_geo01.configure(bg="green")
-        nbsuccess += 1
-        print(f"Essai № {nbtrials} réusi")
-    lbl_result.configure(text=f"{pseudo} Essais réussis : {nbsuccess} / {nbtrials}")
-    window_geo01.update()
-    time.sleep(1) # delai 1s
-    next_point(event=None)
-
-
-def circle(x,y,r,color):
-    #circle, center x & y, r radius, color
-    mycircle=canvas.create_oval((x - r) * scale + l/2, -(y-r) * scale + h/2, (x + r) * scale + l/2, -(y + r)* scale + h/2, fill=color)
-    return mycircle
-
-
-def next_point(event):
-    global target_x, target_y, mycircle
-    window_geo01.configure(bg=hex_color)#remettre couleur normale
-    print("next_point " + str(event))
-    #Clearing the canvas
-    canvas.delete('all')
-
-    # x & y axis
-    canvas.create_line(0, h/2, l, h/2, fill="black")  # x
-    canvas.create_line(l/2, 0, l/2, h, fill="black")  # y
-    # graduation -10 +10
-    for i in range(-10,11,5):
-        canvas.create_line(l/2+i*scale, h/2-10,l/2+i*scale, h/2+10, fill="black")  # on x
-        canvas.create_text(l/2+i*scale, h/2+20, text=i, fill="black", font=("Helvetica 15"))
-    for i in range(-5,6,5):
-        canvas.create_line(l/2-10, h/2-i*scale,l/2+10, h/2-i*scale, fill="black")  # y
-        canvas.create_text(l/2-20, h/2-i*scale, text=i, fill="black", font=("Helvetica 15"))
-
-    # x & y random
-    target_x = round(random.uniform(-10, 10),0)
-    target_y = round(random.uniform(-5, 5),0)
-
-    # display x & y, 1 decimal
-    lbl_target.configure(text=f"Cliquez sur le point ({round(target_x, 1)}, {round(target_y, 1)}). Echelle x -10 à +10, y-5 à +5")
-
-
-def save_game(event):
-    global entry_pseudo, nbsuccess, nbtrials, window_geo01
-
-    # Récupération des données depuis les champs de saisie ou les variables globales
-    pseudo = entry_pseudo.get()  # Supposons que entry_pseudo soit un champ de saisie tkinter
-    date_hour = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Récupération de la date actuelle
-    duration = datetime.datetime.now() - start_date  # Calcul de la durée depuis un certain moment (start_date)
-
-    # Calcul du pourcentage de succès en fonction des essais réussis et des essais totaux
-    if nbtrials > 0:
-        percent = (nbsuccess / nbtrials) * 100
-    else:
-        percent = 0
-
-    # Appel de la fonction pour sauvegarder les données dans la base de données
-    saved_game(pseudo, date_hour, duration, exercise, nbtrials, nbsuccess, percent)
-
-    # Fermeture de la fenêtre window_geo01
-    window_geo01.destroy()
-
-    # Réinitialisation des variables nbtrials et nbsuccess
-    nbtrials = 0
-    nbsuccess = 0
-
-    print("Données sauvegardées")
-
-
-def display_timer():
-    duration=datetime.datetime.now()-start_date #elapsed time since beginning, in time with decimals
-    duration_s=int(duration.total_seconds()) #idem but in seconds (integer)
-    #display min:sec (00:13)
-    lbl_duration.configure(text="{:02d}".format(int(duration_s /60)) + ":" + "{:02d}".format(duration_s %60))
-    window_geo01.after(1000, display_timer) #recommencer après 15 ms
-
-def open_window_geo_01(window):
-    # window = tk.Tk()
-    global window_geo01, hex_color, lbl_title, lbl_duration, lbl_result, lbl_target, canvas, start_date, entry_pseudo
-    window_geo01 = tk.Toplevel(window)
-
-    window_geo01.title("Exercice de géométrie")
-    window_geo01.geometry("1100x900")
-
-    # color définition
+    # Définition de la couleur de fond
     rgb_color = (139, 201, 194)
-    hex_color = '#%02x%02x%02x' % rgb_color # translation in hexa
-    window_geo01.configure(bg=hex_color)
+    hex_color = '#%02x%02x%02x' % rgb_color  # Conversion en hexadécimal
+    window_result.configure(bg=hex_color)  # Application de la couleur de fond
+    window_result.grid_columnconfigure(0, weight=1)
 
-    # Canvas creation
-    lbl_title = tk.Label(window_geo01, text=f"{exercise}", font=("Arial", 15))
-    lbl_title.grid(row=0, column=1, padx=5, pady=5)
+    # Division de la fenêtre en différentes frames pour organiser les éléments
+    fram_title = tk.Frame(window_result)
+    fram_title.grid(row=0, column=0)
+    frame_entry_result = tk.Frame(window_result)
+    frame_entry_result.grid(row=1, column=0)
+    frame_result = tk.Frame(window_result, width=15)
+    frame_result.grid(row=2, column=0, pady=20)
+    frame_total = tk.Frame(window_result)
+    frame_total.grid(row=3, column=0)
+    frame_menu = tk.Frame(window_result)
+    frame_menu.grid(row=4, column=0, pady=20)
 
-    lbl_duration = tk.Label(window_geo01, text="0:00", font=("Arial", 15))
-    lbl_duration.grid(row=0,column=2, ipady=5, padx=10,pady=10)
+    # Création de labels, d'entrées et de boutons pour l'interface utilisateur
+    tk.Label(window_result, text="TRAINING : AFFICHAGE", font=("Arial", 15)).grid(row=0, column=0, padx=400, pady=10)
 
-    tk.Label(window_geo01, text='Pseudo:', font=("Arial", 15)).grid(row=1, column=0, padx=5, pady=5)
-    entry_pseudo = tk.Entry(window_geo01, font=("Arial", 15))
+    tk.Label(frame_entry_result, text='Pseudo:', font=("Arial", 10)).grid(row=1, column=0, padx=40, pady=5)
+    entry_pseudo = tk.Entry(frame_entry_result, font=("Arial", 10))
     entry_pseudo.grid(row=1, column=1)
 
+    tk.Label(frame_entry_result, text='Exercice:', font=("Arial", 10)).grid(row=1, column=2, padx=40, pady=5)
+    entry_ex = tk.Entry(frame_entry_result, font=("Arial", 10))
+    entry_ex.grid(row=1, column=3)
 
-    lbl_result = tk.Label(window_geo01, text=f"Essais réussis : 0/0", font=("Arial", 15))
-    lbl_result.grid(row=1, column=3, padx=5, pady=5, columnspan=4)
+    tk.Label(frame_entry_result, text='Date début:', font=("Arial", 10)).grid(row=1, column=4, padx=40, pady=5)
+    entry_date_s = tk.Entry(frame_entry_result, font=("Arial", 10))
+    entry_date_s.grid(row=1, column=5)
 
-    lbl_target = tk.Label(window_geo01, text="", font=("Arial", 15))
-    lbl_target.grid(row=2, column=0, padx=5, pady=5, columnspan=6)
+    tk.Label(frame_entry_result, text='Date fin:', font=("Arial", 10)).grid(row=1, column=6, padx=40, pady=5)
+    entry_date_e = tk.Entry(frame_entry_result, font=("Arial", 10))
+    entry_date_e.grid(row=1, column=7)
 
-    canvas = tk.Canvas(window_geo01, width=l, height=h, bg="#f9d893")
-    canvas.grid(row=4, column=0, padx=5, pady=5, columnspan=6)
-    btn_next = tk.Button(window_geo01, text="Suivant", font=("Arial", 15))
-    btn_next.grid(row=5, column=0, padx=5, pady=5, columnspan=6)
+    btn_resut = tk.Button(frame_entry_result, text="Voir résultats", font=("Arial", 10))
+    btn_resut.grid()
+    btn_resut.bind("<Button-1>", lambda e: display_tuple_in_table((title + display_table_result()), (title_average + display_table_average())))
+
+    btn_create = tk.Button(frame_entry_result,text="+", font=("Arial", 10))
+    btn_create.grid(row=2, column=7, sticky="E")
+
+    tk.Label(frame_menu,text="ID :", font=("Arial", 10)).grid(row=0, column=2)
+    entry_id = tk.Entry(frame_menu)
+    entry_id.grid(row=0, column=3)
+
+    btn_edit = tk.Button(frame_menu,text="Modifier", font=("Arial", 10))
+    btn_edit.grid(row=0, column=1)
+
+    # Fonction pour afficher les résultats et les moyennes dans des tableaux
+    def display_tuple_in_table(results_tuple, average_tuple):
+        # Boucle à travers les tuples et création des lablels pour afficher les données dans les frames spécifiés
+        for line in range(0, len(results_tuple)):
+            for col in range(0, len(results_tuple[line])):
+                # Création des labels pour les résultats
+                lbl_results = tk.Label(frame_result, text=results_tuple[line][col], width=15, font=("Arial", 10))
+                lbl_results.grid(row=line, column=col, pady=1, sticky="w")
+                btn_del = tk.Button(frame_result, text="X", font=("Arial", 10))
+                btn_del.grid(row=line, column=col)
+
+        # Attribution des couleurs en fonction des pourcentages de réussite
+            if line > 0:  # Exclude the first row
+                width_lbl = round(results_tuple[line][7] / 6.5)
+                width_colors = ""
+                if results_tuple[line][7] <= 25:
+                    width_colors = "red"
+                elif results_tuple[line][7] >= 26 and results_tuple[line][7] <= 75:
+                    width_colors = "yellow"
+                elif results_tuple[line][7] > 75:
+                    width_colors = "green"
+                lbl_results.config(text="", bg=width_colors, width=width_lbl)
 
 
-    btn_finish = tk.Button(window_geo01, text="Terminer", font=("Arial", 15))
-    btn_finish.grid(row=6, column=0, columnspan=6)
+        # Boucle pour afficher les moyennes dans des labels et appliquer les bonnes couleurs
+        for line in range(0, len(average_tuple)):
+            for col in range(0, len(average_tuple[line])):
+                lbl_average = tk.Label(frame_total, text=average_tuple[line][col], width=15, font=("Arial", 10))
+                lbl_average.grid(row=line, column=col, padx=2, pady=2, sticky="w")
 
-    # first call of next_point
-    next_point(event=None)
-    start_date = datetime.datetime.now()
-    display_timer()
+            # Attribution des couleurs en fonction des pourcentages de réussite
+            if line > 0:  # Exclude the first row
+                width_lbl = round(average_tuple[line][4] / 6.5)
+                width_colors = ""
+                if average_tuple[line][4] <= 25:
+                    width_colors = "red"
+                elif average_tuple[line][4] >= 26 and average_tuple[line][4] <= 75:
+                    width_colors = "yellow"
+                elif average_tuple[line][4] > 75:
+                    width_colors = "green"
+                lbl_average.config(text="", bg=width_colors, width=width_lbl)
 
-    # first call of next_point
-    # binding actions (canvas & buttons)
-    canvas.bind("<Button-1>", canvas_click)
-    btn_next.bind("<Button-1>", next_point)
-    btn_finish.bind("<Button-1>", save_game)
+    # Fonction pour supprimer une ligne
+    def delete(event):
+        delete_from_id(entry_id.get())
 
+        for widget in frame_total.winfo_children():
+            widget.destroy()
 
-    # main loop
-    window_geo01.mainloop()
+        for widget in frame_result.winfo_children():
+            widget.destroy()
+
+        display_tuple_in_table(title + display_table_result(), title_average + display_table_average())
+
+    # Fonction pour crée une autre fenêtre
+    def window_edit(event):
+        # Crée une nouvelle fenêtre
+        window_edit = tk.Tk()
+        window_edit.title("Modification")  # Définit le titre de la fenêtre
+        window_edit.geometry("500x400")  # Définit la taille de la fenêtre
+        window_edit.maxsize(500, 400)  # Définit la taille maximale de la fenêtre
+        window_edit.minsize(500, 400)  # Définit la taille minimale de la fenêtre
+
+        # Définition de la couleur en utilisant les valeurs RGB et en la convertissant en code hexadécimal
+        rgb_color = (139, 201, 194)
+        hex_color = '#%02x%02x%02x' % rgb_color  # Convertit les valeurs RGB en hexadécimal
+        window_edit.configure(bg=hex_color)  # Applique la couleur d'arrière-plan à la fenêtre
+
+        # Crée un cadre dans la fenêtre principale
+        frame_edit_title = tk.Frame(window_edit)
+        frame_edit_title.grid(row=0, column=0)
+
+        # Ajoute des labels et des champs de saisie dans la fenêtre
+        tk.Label(window_edit, text="TRAINING : MODIFICATION", font=("Arial", 15)).grid(row=0, column=0, padx=130,
+                                                                                       pady=10)
+        tk.Label(window_edit, text="ID").grid()
+        entry_id1 = tk.Entry(window_edit)
+        entry_id1.grid()
+        tk.Label(window_edit, text="Temps", font=("Arial", 10)).grid()
+        entry_temps = tk.Entry(window_edit)
+        entry_temps.grid()
+        tk.Label(window_edit, text="nb OK", font=("Arial", 10)).grid()
+        entry_ok = tk.Entry(window_edit)
+        entry_ok.grid()
+        tk.Label(window_edit, text="nb Total", font=("Arial", 10)).grid()
+        entry_total = tk.Entry(window_edit)
+        entry_total.grid()
+
+        # Ajoute un bouton "Terminer" dans la fenêtre
+        btn_edit1 = tk.Button(window_edit, text="Terminer")
+        btn_edit1.grid()
+        btn_edit1.bind("<Button-1>", lambda e: edit_row())  # Lie l'événement de clic du bouton à la fonction edit_row()
+
+        def edit_row():
+            percentage_successful = 100 * (int(entry_ok.get()) / int(entry_total.get()))
+
+            for widget in frame_total.winfo_children():
+                widget.destroy()
+
+            for widget in frame_result.winfo_children():
+                widget.destroy()
+
+            # Appelle la fonction edit_result() avec les valeurs saisies dans les champs de saisie
+            edit_result(entry_temps.get(), entry_ok.get(), entry_total.get(), percentage_successful, entry_id1.get())
+            # Affiche le résultat dans une table en appelant les fonctions display_table_result() et display_table_average()
+            display_tuple_in_table(title + display_table_result(), title_average + display_table_average())
+            window_edit.destroy()  # Ferme la fenêtre d'édition après l'édition
+
+    def window_create(event):
+        # Crée une nouvelle fenêtre
+        window_create = tk.Tk()
+        window_create.title("Création")  # Définit le titre de la fenêtre
+        window_create.geometry("500x400")  # Définit la taille de la fenêtre
+        window_create.maxsize(500, 400)  # Définit la taille maximale de la fenêtre
+        window_create.minsize(500, 400)  # Définit la taille minimale de la fenêtre
+
+        # Définition de la couleur en utilisant les valeurs RGB et en la convertissant en code hexadécimal
+        rgb_color = (139, 201, 194)
+        hex_color = '#%02x%02x%02x' % rgb_color  # Convertit les valeurs RGB en hexadécimal
+        window_create.configure(bg=hex_color)  # Applique la couleur d'arrière-plan à la fenêtre
+
+        frame_edit_title = tk.Frame(window_create)
+        frame_edit_title.grid(row=0, column=0)
+
+        # Ajoute des labels et des champs de saisie dans la fenêtre
+        tk.Label(window_create, text="TRAINING : CRÉATION", font=("Arial", 15)).grid(row=0, column=0, padx=140, pady=10)
+        tk.Label(window_create, text="Pseudo", font=("Arial", 10)).grid()
+        entry_pseudo_create = tk.Entry(window_create)
+        entry_pseudo_create.grid()
+
+        tk.Label(window_create, text="Date heur", font=("Arial", 10)).grid()
+        entry_date_create = tk.Entry(window_create)
+        entry_date_create.grid()
+
+        tk.Label(window_create, text="Temps", font=("Arial", 10)).grid()
+        entry_temps_create = tk.Entry(window_create)
+        entry_temps_create.grid()
+
+        tk.Label(window_create, text="Exercice", font=("Arial", 10)).grid()
+        entry_exercice_create = tk.ttk.Combobox(window_create, values=["GEO1", "INFO2", "INFO5"])
+        entry_exercice_create.grid()
+
+        tk.Label(window_create, text="nb OK", font=("Arial", 10)).grid()
+        entry_ok_create = tk.Entry(window_create)
+        entry_ok_create.grid()
+
+        tk.Label(window_create, text="nb Total", font=("Arial", 10)).grid()
+        entry_total_create = tk.Entry(window_create)
+        entry_total_create.grid()
+
+        # Ajoute un bouton "Terminer" dans la fenêtre
+        btn_create1 = tk.Button(window_create, text="Terminer")
+        btn_create1.grid()
+        btn_create1.bind("<Button-1>",lambda e: insert_row())  # Lie l'événement de clic du bouton à la fonction insert_row()
+
+        def insert_row():
+            percentage_successful = 100 * (int(entry_ok_create.get()) / int(entry_total_create.get()))
+            # Appelle la fonction insert_from_id() avec les valeurs saisies dans les champs de saisie
+            insert_from_id(entry_pseudo_create.get(), entry_date_create.get(), entry_temps_create.get(),entry_exercice_create.get(), entry_ok_create.get(), entry_total_create.get(),percentage_successful)
+            # Affiche le résultat dans une table en appelant les fonctions display_table_result() et display_table_average()
+            display_tuple_in_table(title + display_table_result(), title_average + display_table_average())
+            window_create.destroy()  # Ferme la fenêtre de création après l'insertion
+
+    # Bind les boutons pour ouvrire une nouvelle fenêtre
+    btn_del.bind("<Button-1>", lambda e: delete(e))
+    btn_edit.bind("<Button-1>", lambda e: window_edit(e))
+    btn_create.bind("<Button-1>", lambda e: window_create(e))
+
+# Main window
+window = tk.Tk()
+window.title("Training, entrainement cérébral")
+window.geometry("1100x900")
+
+# color définition
+rgb_color = (139, 201, 194)
+hex_color = '#%02x%02x%02x' % rgb_color # translation in hexa
+window.configure(bg=hex_color)
+window.grid_columnconfigure((0,1,2), minsize=300, weight=1)
+
+# Title création
+lbl_title = tk.Label(window, text="TRAINING MENU", font=("Arial", 15))
+lbl_title.grid(row=0, column=1,ipady=5, padx=40,pady=40)
+
+# labels createion and positioning
+for ex in range(len(a_exercise)):
+    a_title[ex]=tk.Label(window, text=a_exercise[ex], font=("Arial", 15))
+    a_title[ex].grid(row=1+2*(ex//3),column=ex % 3 , padx=40,pady=10) # 3 label per row
+
+    a_image[ex] = tk.PhotoImage(file="img/" + a_exercise[ex] + ".gif") # image name
+    albl_image[ex] = tk.Label(window, image=a_image[ex]) # put image on label
+    albl_image[ex].grid(row=2 + 2*(ex // 3), column=ex % 3, padx=40, pady=10) # 3 label per row
+    albl_image[ex].bind("<Button-1>", lambda event, ex = ex :exercise(event=None, exer=a_exercise[ex])) #link to others .py
+    print(a_exercise[ex])
+
+# Buttons, display results & quit
+btn_display = tk.Button(window, text="Display results", font=("Arial", 15))
+btn_display.grid(row=1+ 2*len(a_exercise)//3 , column=1)
+btn_display.bind("<Button-1>",lambda e: display_result(e))
+
+btn_finish = tk.Button(window, text="Quitter", font=("Arial", 15))
+btn_finish.grid(row=2+ 2*len(a_exercise)//3 , column=1)
+btn_finish.bind("<Button-1>", quit)
+
+# main loop
+window.mainloop()
