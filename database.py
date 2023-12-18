@@ -33,7 +33,7 @@ def display_table_result():
 
 # Fonction pour afficher la table des moyennes
 def display_table_average():
-    query = "SELECT COUNT(pseudo), SEC_TO_TIME(TIME_TO_SEC(SUM(duration))), SUM(nbtrials), SUM(nbok), AVG(percent) FROM results"
+    query = "SELECT COUNT(pseudo), SEC_TO_TIME(SUM(TIME_TO_SEC(duration))), SUM(nbtrials), SUM(nbok), AVG(percent) FROM results"
     cursor = db_connection.cursor()
     cursor.execute(query)
     rows = cursor.fetchall()  # Récupération de toutes les lignes de résultats
@@ -48,15 +48,15 @@ def delete_from_id(id):
     cursor.close()
 
 # Fonction pour éditer les résultats en fonction de l'ID
-def edit_result(duration, nbok, nbtrials, id):
-    query = "UPDATE results SET duration = %s, nbok = %s, nbtrials = %s WHERE idResults = %s"
+def edit_result(duration, nbok, nbtrials, percent, id):
+    query = "UPDATE results SET duration = %s, nbok = %s, nbtrials = %s, percent = %s WHERE idResults = %s"
     cursor = db_connection.cursor()
-    cursor.execute(query, (duration, nbok, nbtrials, id))
+    cursor.execute(query, (duration, nbok, nbtrials, percent, id))
     cursor.close()
 
 # Fonction pour insérer des données à partir d'un ID
-def insert_from_id(pseudo, date_hour, duration, exercice, nbtrials, nbok):
-    query = "INSERT INTO results (pseudo, date_hour, duration, exercice, nbtrials, nbok) VALUES (%s, %s, %s, %s, %s, %s)"
+def insert_from_id(pseudo, date_hour, duration, exercice, nbtrials, nbok, percent):
+    query = "INSERT INTO results (pseudo, date_hour, duration, exercice, nbtrials, nbok, percent) VALUES (%s, %s, %s, %s, %s, %s, %s)"
     cursor = db_connection.cursor()
-    cursor.execute(query, (pseudo, date_hour, duration, exercice, nbtrials, nbok))
+    cursor.execute(query, (pseudo, date_hour, duration, exercice, nbtrials, nbok, percent))
     cursor.close()
