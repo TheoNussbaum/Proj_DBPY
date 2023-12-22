@@ -24,12 +24,13 @@ USE `proj_DBPY` ;
 DROP TABLE IF EXISTS `proj_DBPY`.`Results` ;
 
 CREATE TABLE IF NOT EXISTS `proj_DBPY`.`Results` (
-  `idResults` INT NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
-  `DateAndHour` DATETIME NULL,
-  `time` TIME NULL,
-  `nb_correct` INT NULL,
-  `nb_total` INT NULL,
+  `idResults` INT NOT NULL AUTO_INCREMENT,
+  `pseudo` VARCHAR(45) NOT NULL,
+  `date_hour` DATETIME NULL,
+  `duration` TIME NULL,
+  `exercice` VARCHAR(45) NULL,
+  `nbtrials` INT NULL,
+  `nbok` INT NULL,
   `percent` FLOAT NULL,
   PRIMARY KEY (`idResults`),
   UNIQUE INDEX `idResults_UNIQUE` (`idResults` ASC) VISIBLE)
@@ -52,4 +53,3 @@ ENGINE = InnoDB;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
