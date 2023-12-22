@@ -152,8 +152,7 @@ def display_result(event):
         window_edit = tk.Tk()
         window_edit.title("Modification")  # Définit le titre de la fenêtre
         window_edit.geometry("500x400")  # Définit la taille de la fenêtre
-        window_edit.maxsize(500, 400)  # Définit la taille maximale de la fenêtre
-        window_edit.minsize(500, 400)  # Définit la taille minimale de la fenêtre
+        window_edit.resizable(False, False)
 
         # Définition de la couleur en utilisant les valeurs RGB et en la convertissant en code hexadécimal
         rgb_color = (139, 201, 194)
@@ -202,8 +201,7 @@ def display_result(event):
         window_create = tk.Tk()
         window_create.title("Création")  # Définit le titre de la fenêtre
         window_create.geometry("500x400")  # Définit la taille de la fenêtre
-        window_create.maxsize(500, 400)  # Définit la taille maximale de la fenêtre
-        window_create.minsize(500, 400)  # Définit la taille minimale de la fenêtre
+        window_create.resizable(False, False)
 
         # Définition de la couleur en utilisant les valeurs RGB et en la convertissant en code hexadécimal
         rgb_color = (139, 201, 194)
