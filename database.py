@@ -31,6 +31,15 @@ def display_table_result():
     cursor.close()
     return rows
 
+def sql_filter(sql_add):
+    sql_base="SELECT * from results"
+    query = sql_base + sql_dynamic2(sql_add, )
+    cursor = db_connection.cursor()
+    cursor.execute(query)
+    rows = cursor.fetchall()  # Récupération de toutes les lignes de résultats
+    cursor.close()
+    return rows
+
 # Fonction pour afficher la table des moyennes
 def display_table_average():
     query = "SELECT COUNT(pseudo), SEC_TO_TIME(SUM(TIME_TO_SEC(duration))), SUM(nbtrials), SUM(nbok), AVG(percent) FROM results"

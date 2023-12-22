@@ -7,6 +7,8 @@ Version : 0.2
 # Importation des modules
 import tkinter as tk
 from tkinter import ttk
+from Login import *
+from singon import *
 from database import *
 import geo01
 import info02
@@ -80,12 +82,15 @@ def display_result(event):
     btn_create = tk.Button(frame_entry_result,text="+", font=("Arial", 10))
     btn_create.grid(row=2, column=7, sticky="E")
 
-    tk.Label(frame_menu,text="ID :", font=("Arial", 10)).grid(row=0, column=2)
+    tk.Label(frame_menu,text="ID :", font=("Arial", 10)).grid(row=0, column=0)
     entry_id = tk.Entry(frame_menu)
-    entry_id.grid(row=0, column=3)
+    entry_id.grid(row=0, column=1)
 
     btn_edit = tk.Button(frame_menu,text="Modifier", font=("Arial", 10))
-    btn_edit.grid(row=0, column=1)
+    btn_edit.grid(row=0, column=2)
+
+    btn_del = tk.Button(frame_menu,text="Supprimer", font=("Arial", 10))
+    btn_del.grid(row=0, column=3)
 
     # Fonction pour afficher les résultats et les moyennes dans des tableaux
     def display_tuple_in_table(results_tuple, average_tuple):
@@ -95,8 +100,7 @@ def display_result(event):
                 # Création des labels pour les résultats
                 lbl_results = tk.Label(frame_result, text=results_tuple[line][col], width=15, font=("Arial", 10))
                 lbl_results.grid(row=line, column=col, pady=1, sticky="w")
-                btn_del = tk.Button(frame_result, text="X", font=("Arial", 10))
-                btn_del.grid(row=line, column=col)
+
 
         # Attribution des couleurs en fonction des pourcentages de réussite
             if line > 0:  # Exclude the first row
@@ -144,6 +148,7 @@ def display_result(event):
     # Fonction pour crée une autre fenêtre
     def window_edit(event):
         # Crée une nouvelle fenêtre
+        global window_edit
         window_edit = tk.Tk()
         window_edit.title("Modification")  # Définit le titre de la fenêtre
         window_edit.geometry("500x400")  # Définit la taille de la fenêtre
@@ -162,9 +167,6 @@ def display_result(event):
         # Ajoute des labels et des champs de saisie dans la fenêtre
         tk.Label(window_edit, text="TRAINING : MODIFICATION", font=("Arial", 15)).grid(row=0, column=0, padx=130,
                                                                                        pady=10)
-        tk.Label(window_edit, text="ID").grid()
-        entry_id1 = tk.Entry(window_edit)
-        entry_id1.grid()
         tk.Label(window_edit, text="Temps", font=("Arial", 10)).grid()
         entry_temps = tk.Entry(window_edit)
         entry_temps.grid()
@@ -190,7 +192,7 @@ def display_result(event):
                 widget.destroy()
 
             # Appelle la fonction edit_result() avec les valeurs saisies dans les champs de saisie
-            edit_result(entry_temps.get(), entry_ok.get(), entry_total.get(), percentage_successful, entry_id1.get())
+            edit_result(entry_temps.get(), entry_ok.get(), entry_total.get(), percentage_successful, entry_id.get())
             # Affiche le résultat dans une table en appelant les fonctions display_table_result() et display_table_average()
             display_tuple_in_table(title + display_table_result(), title_average + display_table_average())
             window_edit.destroy()  # Ferme la fenêtre d'édition après l'édition
@@ -286,9 +288,18 @@ btn_display = tk.Button(window, text="Display results", font=("Arial", 15))
 btn_display.grid(row=1+ 2*len(a_exercise)//3 , column=1)
 btn_display.bind("<Button-1>",lambda e: display_result(e))
 
+btn_login = tk.Button(window, text="Login", font=("Arial", 15))
+btn_login.grid(row=0, column=3, padx=2)
+btn_login.bind("<Button-1>",lambda e: window_log())
+
+btn_register = tk.Button(window, text="Sing On", font=("Arial", 15))
+btn_register.grid(row=0, column=2, sticky="E")
+btn_register.bind("<Button-1>",lambda e: window_sing())
+
 btn_finish = tk.Button(window, text="Quitter", font=("Arial", 15))
 btn_finish.grid(row=2+ 2*len(a_exercise)//3 , column=1)
 btn_finish.bind("<Button-1>", quit)
+
 
 # main loop
 window.mainloop()

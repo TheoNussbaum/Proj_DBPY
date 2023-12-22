@@ -62,6 +62,7 @@ def sql_dynamic2(p,e,ds,de):
     return sql_add
 
 
+
 # Title création
 lbl_title = tk.Label(window, text="exemple requête", font=("Arial", 15))
 lbl_title.grid(row=0, column=0,ipady=5, padx=40,pady=40, columnspan=8)
